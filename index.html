@@ -87,7 +87,7 @@
 
         <div class="flex items-center gap-2">
             <input type="password" id="apiKey" placeholder="Gemini API Key" class="px-2 py-1 text-xs rounded bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 w-32 transition">
-            <div class="h-4 w-px bg-slate-300 dark:bg-slate-700"></div>
+            <div class="h-4 w-px bg-slate-300 dark:border-slate-700"></div>
             
             <button onclick="toggleHelp()" class="p-1.5 hover:bg-slate-200 dark:hover:bg-slate-800 rounded transition text-yellow-500" title="Help & Shortcuts">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
@@ -121,10 +121,7 @@
                 
                 <div class="space-y-4 text-sm text-slate-600 dark:text-slate-300">
                     <section>
-                        <h3 class="font-semibold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
-                            <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"/></svg>
-                            Navigation
-                        </h3>
+                        <h3 class="font-semibold text-slate-900 dark:text-white mb-2">Navigation</h3>
                         <ul class="space-y-1 ml-6 list-disc">
                             <li><strong>Drag</strong> - Click and drag to pan around the diagram</li>
                             <li><strong>Ctrl + Scroll</strong> - Zoom in/out with mouse wheel</li>
@@ -133,10 +130,7 @@
                     </section>
 
                     <section>
-                        <h3 class="font-semibold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
-                            <svg class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                            AI Features
-                        </h3>
+                        <h3 class="font-semibold text-slate-900 dark:text-white mb-2">AI Features</h3>
                         <ul class="space-y-1 ml-6 list-disc">
                             <li><strong>Gemini API Key</strong> - Enter your key in the header to enable AI</li>
                             <li><strong>Fix with AI</strong> - When you see a syntax error, click the purple lightning button to auto-fix</li>
@@ -145,10 +139,7 @@
                     </section>
 
                     <section>
-                        <h3 class="font-semibold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
-                            <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
-                            Import / Export
-                        </h3>
+                        <h3 class="font-semibold text-slate-900 dark:text-white mb-2">Import / Export</h3>
                         <ul class="space-y-1 ml-6 list-disc">
                             <li><strong>Import</strong> - Load .mmd, .txt, or .md files</li>
                             <li><strong>Export Code</strong> - Download the source code as .mmd file</li>
@@ -157,20 +148,8 @@
                         </ul>
                     </section>
 
-                    <section>
-                        <h3 class="font-semibold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
-                            <svg class="w-4 h-4 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                            Display Modes
-                        </h3>
-                        <ul class="space-y-1 ml-6 list-disc">
-                            <li><strong>Computer icon</strong> - Follows your OS/browser theme automatically</li>
-                            <li><strong>Sun icon</strong> - Force light mode for the editor</li>
-                            <li><strong>Moon icon</strong> - Force dark mode for the editor</li>
-                        </ul>
-                    </section>
-
                     <div class="mt-6 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800 text-xs">
-                        <strong>Tip:</strong> The diagram updates automatically as you type (with a small delay). If you see a red error panel at the bottom of the editor, that's where syntax errors appear. You can click "Clear" to dismiss it or "Fix with AI" to auto-correct!
+                        <strong>Tip:</strong> The diagram updates automatically as you type. Use Ctrl+Scroll to zoom in the preview!
                     </div>
                 </div>
             </div>
@@ -197,14 +176,8 @@
                         Syntax Error
                     </span>
                     <div class="flex items-center gap-2">
-                        <button onclick="clearError()" class="text-xs bg-slate-600 hover:bg-slate-500 text-white px-3 py-1.5 rounded flex items-center gap-1.5 transition" title="Dismiss error">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                            Clear
-                        </button>
-                        <button onclick="fixWithAI()" class="text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded flex items-center gap-1.5 transition">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                            Fix with AI
-                        </button>
+                        <button onclick="clearError()" class="text-xs bg-slate-600 hover:bg-slate-500 text-white px-3 py-1.5 rounded transition">Clear</button>
+                        <button onclick="fixWithAI()" class="text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded transition">Fix with AI</button>
                     </div>
                 </div>
                 <div id="error-msg" class="text-xs text-red-700 dark:text-red-300 overflow-y-auto font-mono bg-white/50 dark:bg-black/20 p-2 rounded max-h-24"></div>
@@ -275,10 +248,6 @@
         function clearError() {
             errorPanel.classList.add('hidden');
             errorMsg.textContent = '';
-            const bombSvg = output.querySelector('svg');
-            if (bombSvg && bombSvg.textContent.includes('Syntax error')) {
-                output.innerHTML = '';
-            }
         }
 
         function toggleHelp() {
@@ -304,8 +273,7 @@
                 securityLevel: 'loose'
             });
             
-            clearTimeout(window.renderTimer);
-            window.renderTimer = setTimeout(render, 100);
+            setTimeout(render, 100);
         }
 
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
@@ -428,15 +396,12 @@
                 if (fixed) {
                     let cleanCode = fixed.replace(/```mermaid/g, '').replace(/```/g, '').trim();
                     editor.value = cleanCode;
-                    setTimeout(async () => {
-                        await render();
-                    }, 100);
+                    setTimeout(render, 100);
                 } else {
                     throw new Error('No fix suggested');
                 }
             } catch (e) {
                 alert('AI Fix Error: ' + e.message);
-                console.error(e);
             } finally {
                 document.getElementById('loading').classList.add('hidden');
             }
@@ -494,17 +459,28 @@
             }
             
             try {
-                // Get dimensions
-                const bbox = svg.getBBox();
-                const width = bbox.width || svg.getAttribute('width') || 800;
-                const height = bbox.height || svg.getAttribute('height') || 600;
+                // Get dimensions from viewBox or attributes
+                let width = parseFloat(svg.getAttribute('width')) || 800;
+                let height = parseFloat(svg.getAttribute('height')) || 600;
                 
-                // Create canvas
+                // Handle viewBox if present
+                const viewBox = svg.getAttribute('viewBox');
+                if (viewBox) {
+                    const parts = viewBox.split(' ');
+                    if (parts.length === 4) {
+                        width = parseFloat(parts[2]);
+                        height = parseFloat(parts[3]);
+                    }
+                }
+                
+                // Limit size to prevent crashes
+                const maxDimension = 4000;
+                const scale = Math.min(2, maxDimension / Math.max(width, height));
+                
                 const canvas = document.createElement('canvas');
-                const scale = 2;
-                const padding = 40;
-                canvas.width = (parseFloat(width) + padding * 2) * scale;
-                canvas.height = (parseFloat(height) + padding * 2) * scale;
+                canvas.width = width * scale;
+                canvas.height = height * scale;
+                
                 const ctx = canvas.getContext('2d');
                 
                 // Background
@@ -512,7 +488,7 @@
                 ctx.fillStyle = isDark ? '#0f172a' : '#ffffff';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
                 
-                // Convert SVG to data URL (base64) to avoid tainting
+                // Serialize SVG
                 const serializer = new XMLSerializer();
                 let svgString = serializer.serializeToString(svg);
                 
@@ -521,36 +497,40 @@
                     svgString = svgString.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"');
                 }
                 
-                // Convert to base64 data URL instead of blob to avoid CORS issues
-                const svgBase64 = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgString)));
+                // Create blob URL (more memory efficient than base64)
+                const svgBlob = new Blob([svgString], {type: 'image/svg+xml;charset=utf-8'});
+                const url = URL.createObjectURL(svgBlob);
                 
                 const img = new Image();
                 
                 img.onload = function() {
                     try {
-                        ctx.save();
-                        ctx.scale(scale, scale);
-                        ctx.drawImage(img, padding, padding, parseFloat(width), parseFloat(height));
-                        ctx.restore();
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                         
-                        // Export
-                        const pngUrl = canvas.toDataURL('image/png');
-                        const a = document.createElement('a');
-                        a.href = pngUrl;
-                        a.download = 'diagram.png';
-                        a.click();
+                        // Export with quality check
+                        if (canvas.width > 0 && canvas.height > 0) {
+                            const pngUrl = canvas.toDataURL('image/png');
+                            const a = document.createElement('a');
+                            a.href = pngUrl;
+                            a.download = 'diagram.png';
+                            a.click();
+                        } else {
+                            alert('Error: Diagram has invalid dimensions');
+                        }
                     } catch (err) {
                         console.error('Export error:', err);
                         alert('Error exporting PNG. Try using SVG export instead.');
+                    } finally {
+                        URL.revokeObjectURL(url);
                     }
                 };
                 
                 img.onerror = function() {
                     alert('Error loading diagram image');
+                    URL.revokeObjectURL(url);
                 };
                 
-                // Use base64 data URL
-                img.src = svgBase64;
+                img.src = url;
                 
             } catch (err) {
                 console.error('PNG export error:', err);
@@ -585,6 +565,7 @@
         const activeBtn = document.getElementById(`btn-${state.theme}`);
         if (activeBtn) activeBtn.classList.add('active');
         
+        // Initial render
         setTimeout(render, 500);
     </script>
 </body>
