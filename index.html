@@ -241,10 +241,10 @@
         </div>
     </main>
 
-    <!-- Load Mermaid first, then initialize -->
+    <!-- Load Mermaid -->
     <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
     <script>
-        // Initialize Mermaid immediately after loading
+        // Initialize Mermaid immediately
         mermaid.initialize({ 
             startOnLoad: false,
             theme: 'default',
@@ -298,7 +298,6 @@
             
             document.documentElement.classList.toggle('dark', isDark);
             
-            // Re-init mermaid with correct theme
             mermaid.initialize({
                 startOnLoad: false,
                 theme: isDark ? 'dark' : 'default',
@@ -494,62 +493,69 @@
                 return;
             }
             
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            const img = new Image();
-            
-            // Get SVG data with proper xmlns
-            const serializer = new XMLSerializer();
-            let svgStr = serializer.serializeToString(svg);
-            
-            if (!svgStr.includes('xmlns=')) {
-                svgStr = svgStr.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"');
-            }
-            
-            // Create blob and url
-            const svgBlob = new Blob([svgStr], {type: 'image/svg+xml;charset=utf-8'});
-            const url = URL.createObjectURL(svgBlob);
-            
-            img.onload = function() {
-                // High DPI export (2x)
+            try {
+                // Get dimensions
+                const bbox = svg.getBBox();
+                const width = bbox.width || svg.getAttribute('width') || 800;
+                const height = bbox.height || svg.getAttribute('height') || 600;
+                
+                // Create canvas
+                const canvas = document.createElement('canvas');
                 const scale = 2;
-                const padding = 20;
+                const padding = 40;
+                canvas.width = (parseFloat(width) + padding * 2) * scale;
+                canvas.height = (parseFloat(height) + padding * 2) * scale;
+                const ctx = canvas.getContext('2d');
                 
-                canvas.width = (img.width + padding * 2) * scale;
-                canvas.height = (img.height + padding * 2) * scale;
-                
-                ctx.scale(scale, scale);
-                
-                // Background based on current theme
+                // Background
                 const isDark = document.documentElement.classList.contains('dark');
                 ctx.fillStyle = isDark ? '#0f172a' : '#ffffff';
-                ctx.fillRect(0, 0, canvas.width/scale, canvas.height/scale);
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
                 
-                // Draw image centered with padding
-                ctx.drawImage(img, padding, padding, img.width, img.height);
+                // Convert SVG to data URL (base64) to avoid tainting
+                const serializer = new XMLSerializer();
+                let svgString = serializer.serializeToString(svg);
                 
-                // Export
-                try {
-                    const pngUrl = canvas.toDataURL('image/png');
-                    const a = document.createElement('a');
-                    a.href = pngUrl;
-                    a.download = 'diagram.png';
-                    a.click();
-                } catch (err) {
-                    console.error('Canvas export error:', err);
-                    alert('Error exporting PNG. This may be due to browser security restrictions with SVG content.');
+                // Add xmlns if missing
+                if (!svgString.includes('xmlns="http://www.w3.org/2000/svg"')) {
+                    svgString = svgString.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"');
                 }
                 
-                URL.revokeObjectURL(url);
-            };
-            
-            img.onerror = function() {
-                alert('Error converting SVG to image');
-                URL.revokeObjectURL(url);
-            };
-            
-            // Set source after handlers are attached
-            img.src = url;
+                // Convert to base64 data URL instead of blob to avoid CORS issues
+                const svgBase64 = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgString)));
+                
+                const img = new Image();
+                
+                img.onload = function() {
+                    try {
+                        ctx.save();
+                        ctx.scale(scale, scale);
+                        ctx.drawImage(img, padding, padding, parseFloat(width), parseFloat(height));
+                        ctx.restore();
+                        
+                        // Export
+                        const pngUrl = canvas.toDataURL('image/png');
+                        const a = document.createElement('a');
+                        a.href = pngUrl;
+                        a.download = 'diagram.png';
+                        a.click();
+                    } catch (err) {
+                        console.error('Export error:', err);
+                        alert('Error exporting PNG. Try using SVG export instead.');
+                    }
+                };
+                
+                img.onerror = function() {
+                    alert('Error loading diagram image');
+                };
+                
+                // Use base64 data URL
+                img.src = svgBase64;
+                
+            } catch (err) {
+                console.error('PNG export error:', err);
+                alert('Error exporting PNG: ' + err.message);
+            }
         }
 
         // Expose functions
@@ -570,7 +576,6 @@
         const isDark = state.theme === 'dark' || (state.theme === 'system' && systemDark);
         document.documentElement.classList.toggle('dark', isDark);
         
-        // Re-init mermaid with correct initial theme
         mermaid.initialize({
             startOnLoad: false,
             theme: isDark ? 'dark' : 'default',
@@ -580,7 +585,6 @@
         const activeBtn = document.getElementById(`btn-${state.theme}`);
         if (activeBtn) activeBtn.classList.add('active');
         
-        // Initial render
         setTimeout(render, 500);
     </script>
 </body>
