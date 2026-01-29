@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Mermaid AI Studio</title>
+
+    <!-- NOTE: For production, install Tailwind locally or build it into your CSS.
+         This demo uses the CDN for convenience. -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -17,52 +20,53 @@
             }
         }
     </script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
     <style>
         body { font-family: 'Inter', sans-serif; overflow: hidden; }
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
-        
+
         .editor-area { font-family: 'Fira Code', monospace; resize: none; tab-size: 4; }
-        
-        .grid-bg-light { 
-            background-image: radial-gradient(#cbd5e1 1px, transparent 1px); 
-            background-size: 20px 20px; 
+
+        .grid-bg-light {
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 20px 20px;
         }
-        .grid-bg-dark { 
-            background-image: radial-gradient(#020617 1px, transparent 1px); 
-            background-size: 20px 20px; 
+        .grid-bg-dark {
+            background-image: radial-gradient(#020617 1px, transparent 1px);
+            background-size: 20px 20px;
         }
-        
+
         #zoom-wrapper { transform-origin: center center; transition: transform 0.1s ease-out; }
         #zoom-wrapper.grabbing { cursor: grabbing !important; }
         #zoom-wrapper.grab { cursor: grab; }
-        
-        .theme-btn.active { 
-            background-color: rgba(59, 130, 246, 0.2); 
-            color: #3b82f6; 
-            border-color: #3b82f6; 
+
+        .theme-btn.active {
+            background-color: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+            border-color: #3b82f6;
         }
-        
-        .loader { 
-            border: 3px solid rgba(59, 130, 246, 0.1); 
-            border-top-color: #3b82f6; 
-            border-radius: 50%; 
-            width: 20px; 
-            height: 20px; 
-            animation: spin 0.6s linear infinite; 
+
+        .loader {
+            border: 3px solid rgba(59, 130, 246, 0.1);
+            border-top-color: #3b82f6;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 0.6s linear infinite;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
-        
+
         .glass { backdrop-filter: blur(12px); }
-        
+
         /* Fix for Mermaid output sizing */
-        #mermaid-output svg { 
-            max-width: 100% !important; 
-            height: auto !important; 
+        #mermaid-output svg {
+            max-width: 100% !important;
+            height: auto !important;
         }
-        
+
         /* Fix for error panel */
         #error-panel { max-height: 150px; overflow-y: auto; }
     </style>
@@ -97,18 +101,18 @@
         <div class="flex items-center gap-2">
             <input type="password" id="apiKey" placeholder="Gemini API Key" class="px-2 py-1 text-xs rounded bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 w-32 transition" onchange="saveApiKey()">
             <div class="h-4 w-px bg-slate-300 dark:border-slate-700"></div>
-            
+
             <button onclick="toggleHelp()" class="p-1.5 hover:bg-slate-200 dark:hover:bg-slate-800 rounded transition text-yellow-500" title="Help & Shortcuts">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             </button>
-            
+
             <button onclick="importFile()" class="p-1.5 hover:bg-slate-200 dark:hover:bg-slate-800 rounded transition" title="Import Diagram File">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
             </button>
             <button onclick="exportFile()" class="p-1.5 hover:bg-slate-200 dark:hover:bg-slate-800 rounded transition" title="Export Code">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
             </button>
-            
+
             <button onclick="downloadSVG()" class="px-3 py-1.5 text-sm font-medium rounded border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white dark:text-blue-400 dark:border-blue-400 dark:hover:bg-blue-400 dark:hover:text-slate-900 transition" title="Download as SVG">SVG</button>
             <button onclick="downloadPNG()" class="px-3 py-1.5 text-sm font-medium rounded bg-blue-600 hover:bg-blue-500 text-white transition" title="Download as PNG (Transparent)">PNG</button>
         </div>
@@ -127,7 +131,7 @@
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                     </button>
                 </div>
-                
+
                 <div class="space-y-4 text-sm text-slate-600 dark:text-slate-300">
                     <section>
                         <h3 class="font-semibold text-slate-900 dark:text-white mb-2">Navigation</h3>
@@ -174,7 +178,7 @@
     E --> B
     C --> F[Deploy]
     F --> G[Success]</textarea>
-            
+
             <!-- Error Panel -->
             <div id="error-panel" class="hidden border-t border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20 flex flex-col p-3 shrink-0">
                 <div class="flex items-center justify-between mb-2">
@@ -193,7 +197,7 @@
 
         <!-- Preview -->
         <div class="w-1/2 relative bg-slate-100 dark:bg-slate-950 overflow-hidden grid-bg-light dark:grid-bg-dark transition-colors duration-200" id="preview-area">
-            
+
             <!-- Horizontal Zoom Controls -->
             <div class="absolute top-4 right-4 flex flex-row items-center gap-0 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700 p-1 z-20">
                 <button onclick="zoomOut()" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded transition" title="Zoom Out">
@@ -225,7 +229,7 @@
     <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
     <script>
         // Initialize Mermaid immediately
-        mermaid.initialize({ 
+        mermaid.initialize({
             startOnLoad: false,
             theme: 'default',
             securityLevel: 'loose',
@@ -250,7 +254,7 @@
         const errorPanel = document.getElementById('error-panel');
         const errorMsg = document.getElementById('error-msg');
         const apiKeyInput = document.getElementById('apiKey');
-        
+
         apiKeyInput.value = state.apiKey;
 
         function saveApiKey() {
@@ -271,22 +275,23 @@
         function setTheme(mode) {
             state.theme = mode;
             localStorage.setItem('theme-mode', mode);
-            
+
             document.querySelectorAll('.theme-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(`btn-${mode}`).classList.add('active');
-            
+            const btn = document.getElementById(`btn-${mode}`);
+            if (btn) btn.classList.add('active');
+
             const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
             const isDark = mode === 'dark' || (mode === 'system' && systemDark);
-            
+
             document.documentElement.classList.toggle('dark', isDark);
-            
+
             mermaid.initialize({
                 startOnLoad: false,
                 theme: isDark ? 'dark' : 'default',
                 securityLevel: 'loose',
                 fontFamily: 'Inter, system-ui, sans-serif'
             });
-            
+
             setTimeout(render, 100);
         }
 
@@ -299,21 +304,21 @@
             document.getElementById('zoom-display').textContent = Math.round(state.scale * 100) + '%';
         }
 
-        function zoomIn() { 
-            state.scale = Math.min(state.scale * 1.2, 5); 
-            updateTransform(); 
+        function zoomIn() {
+            state.scale = Math.min(state.scale * 1.2, 5);
+            updateTransform();
         }
-        
-        function zoomOut() { 
-            state.scale = Math.max(state.scale / 1.2, 0.1); 
-            updateTransform(); 
+
+        function zoomOut() {
+            state.scale = Math.max(state.scale / 1.2, 0.1);
+            updateTransform();
         }
-        
-        function resetView() { 
-            state.scale = 1; 
-            state.translateX = 0; 
-            state.translateY = 0; 
-            updateTransform(); 
+
+        function resetView() {
+            state.scale = 1;
+            state.translateX = 0;
+            state.translateY = 0;
+            updateTransform();
         }
 
         viewport.addEventListener('mousedown', (e) => {
@@ -357,22 +362,22 @@
 
         async function render() {
             const code = editor.value.trim();
-            
-            if (!code) { 
-                output.innerHTML = ''; 
+
+            if (!code) {
+                output.innerHTML = '';
                 clearError();
-                return; 
+                return;
             }
-            
+
             try {
                 output.innerHTML = ''; // Clear previous content
-                
+
                 const id = 'mermaid-' + Date.now();
                 const result = await mermaid.render(id, code);
-                
+
                 output.innerHTML = result.svg;
                 clearError();
-                
+
             } catch (err) {
                 console.error('Mermaid Error:', err);
                 output.innerHTML = '';
@@ -389,25 +394,25 @@
 
         async function fixWithAI() {
             const key = apiKeyInput.value;
-            if (!key) { 
-                alert('Please enter your Gemini API key first'); 
+            if (!key) {
+                alert('Please enter your Gemini API key first');
                 apiKeyInput.focus();
-                return; 
+                return;
             }
-            
+
             localStorage.setItem('gemini-api-key', key);
             document.getElementById('loading').classList.remove('hidden');
-            
+
             try {
                 const currentError = errorMsg.textContent;
                 const currentCode = editor.value;
-                
+
                 const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        contents: [{ parts: [{ 
-                            text: `Fix this Mermaid.js diagram syntax error. Return ONLY the corrected Mermaid code, no markdown blocks, no explanations, no extra text:\n\nError: ${currentError}\n\nCurrent Code:\n${currentCode}\n\nCorrected Code:` 
+                        contents: [{ parts: [{
+                            text: `Fix this Mermaid.js diagram syntax error. Return ONLY the corrected Mermaid code, no markdown blocks, no explanations, no extra text:\n\nError: ${currentError}\n\nCurrent Code:\n${currentCode}\n\nCorrected Code:`
                         }] }],
                         generationConfig: {
                             temperature: 0.1,
@@ -416,15 +421,15 @@
                         }
                     })
                 });
-                
+
                 if (!res.ok) {
                     const errorText = await res.text();
                     throw new Error(`API Error: ${res.status} - ${errorText}`);
                 }
-                
+
                 const data = await res.json();
                 const fixed = data.candidates?.[0]?.content?.parts?.[0]?.text;
-                
+
                 if (fixed) {
                     let cleanCode = fixed.replace(/```mermaid/g, '').replace(/```/g, '').trim();
                     editor.value = cleanCode;
@@ -448,9 +453,9 @@
                 const file = e.target.files[0];
                 if (!file) return;
                 const reader = new FileReader();
-                reader.onload = (ev) => { 
-                    editor.value = ev.target.result; 
-                    render(); 
+                reader.onload = (ev) => {
+                    editor.value = ev.target.result;
+                    render();
                 };
                 reader.readAsText(file);
             };
@@ -473,16 +478,16 @@
                 alert('No diagram to export. Please fix syntax errors first.');
                 return;
             }
-            
+
             try {
                 // Clone the SVG to avoid modifying the original
                 const clone = svg.cloneNode(true);
-                
+
                 // Ensure proper namespaces
                 if (!clone.getAttribute('xmlns')) {
                     clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
                 }
-                
+
                 // Create blob and download
                 const svgData = new XMLSerializer().serializeToString(clone);
                 const blob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
@@ -494,225 +499,162 @@
                 a.click();
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
-                
+
             } catch (err) {
                 console.error('SVG export error:', err);
                 alert('Error exporting SVG. Please try again.');
             }
         }
 
+        //
+        // --- Fixed PNG export implementation ---
+        //
         function downloadPNG() {
             const svg = output.querySelector('svg');
             if (!svg) {
                 alert('No diagram to export. Please fix syntax errors first.');
                 return;
             }
-            
-            try {
-                // Show loading indicator
-                const loading = document.getElementById('loading');
-                loading.classList.remove('hidden');
-                loading.querySelector('span').textContent = 'Generating PNG...';
-                
-                // Clone the SVG
-                const svgClone = svg.cloneNode(true);
-                
-                // Get SVG dimensions from viewBox
-                let width, height;
-                const viewBox = svgClone.getAttribute('viewBox');
-                
-                if (viewBox) {
-                    const parts = viewBox.split(' ');
-                    width = parseFloat(parts[2]);
-                    height = parseFloat(parts[3]);
-                } else {
-                    // Calculate bounding box if no viewBox
-                    const bbox = svgClone.getBBox();
-                    width = bbox.width;
-                    height = bbox.height;
-                    svgClone.setAttribute('viewBox', `0 0 ${width} ${height}`);
-                }
-                
-                // Add some padding
-                const padding = 40;
-                const totalWidth = width + padding * 2;
-                const totalHeight = height + padding * 2;
-                
-                // Set explicit dimensions
-                svgClone.setAttribute('width', totalWidth);
-                svgClone.setAttribute('height', totalHeight);
-                svgClone.setAttribute('viewBox', `0 0 ${width} ${height}`);
-                
-                // Create a temporary container for the SVG
-                const tempDiv = document.createElement('div');
-                tempDiv.style.position = 'absolute';
-                tempDiv.style.left = '-9999px';
-                tempDiv.style.top = '-9999px';
-                tempDiv.style.width = totalWidth + 'px';
-                tempDiv.style.height = totalHeight + 'px';
-                tempDiv.appendChild(svgClone);
-                document.body.appendChild(tempDiv);
-                
-                // Use the Fetch API to convert SVG to PNG via a service
-                // This is a workaround for the CORS issue
-                const svgData = new XMLSerializer().serializeToString(svgClone);
-                const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
-                
-                // Create an iframe to render the SVG and convert to PNG
-                const iframe = document.createElement('iframe');
-                iframe.style.position = 'absolute';
-                iframe.style.left = '-9999px';
-                iframe.style.top = '-9999px';
-                iframe.style.width = totalWidth + 'px';
-                iframe.style.height = totalHeight + 'px';
-                iframe.style.border = 'none';
-                
-                iframe.onload = function() {
-                    try {
-                        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-                        iframeDoc.body.innerHTML = '';
-                        iframeDoc.body.appendChild(svgClone);
-                        
-                        // Wait a bit for rendering
-                        setTimeout(() => {
-                            try {
-                                // Create a canvas in the iframe
-                                const iframeCanvas = iframeDoc.createElement('canvas');
-                                iframeCanvas.width = totalWidth;
-                                iframeCanvas.height = totalHeight;
-                                const ctx = iframeCanvas.getContext('2d');
-                                
-                                // Draw white background (transparent in our case)
-                                ctx.clearRect(0, 0, totalWidth, totalHeight);
-                                
-                                // Create image from SVG
-                                const img = new Image();
-                                img.onload = function() {
-                                    try {
-                                        // Draw the image
-                                        ctx.drawImage(img, padding, padding, width, height);
-                                        
-                                        // Convert to data URL
-                                        const pngDataUrl = iframeCanvas.toDataURL('image/png');
-                                        
-                                        // Trigger download
-                                        const a = iframeDoc.createElement('a');
-                                        a.href = pngDataUrl;
-                                        a.download = 'mermaid-diagram.png';
-                                        iframeDoc.body.appendChild(a);
-                                        a.click();
-                                        iframeDoc.body.removeChild(a);
-                                        
-                                        // Clean up
-                                        document.body.removeChild(tempDiv);
-                                        document.body.removeChild(iframe);
-                                        loading.classList.add('hidden');
-                                    } catch (err) {
-                                        console.error('PNG conversion error:', err);
-                                        fallbackPNG(svgClone, width, height, padding, loading, tempDiv, iframe);
-                                    }
-                                };
-                                
-                                img.onerror = function() {
-                                    fallbackPNG(svgClone, width, height, padding, loading, tempDiv, iframe);
-                                };
-                                
-                                // Use data URL for the image to avoid CORS
-                                const svgUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgData);
-                                img.src = svgUrl;
-                                
-                            } catch (err) {
-                                console.error('Iframe canvas error:', err);
-                                fallbackPNG(svgClone, width, height, padding, loading, tempDiv, iframe);
-                            }
-                        }, 100);
-                    } catch (err) {
-                        console.error('Iframe error:', err);
-                        fallbackPNG(svgClone, width, height, padding, loading, tempDiv, iframe);
-                    }
-                };
-                
-                document.body.appendChild(iframe);
-                
-            } catch (err) {
-                console.error('PNG export error:', err);
-                alert('Error exporting PNG: ' + err.message);
-                document.getElementById('loading').classList.add('hidden');
-            }
-        }
 
-        // Fallback method for PNG export
-        function fallbackPNG(svgClone, width, height, padding, loading, tempDiv, iframe) {
+            const loading = document.getElementById('loading');
+            loading.classList.remove('hidden');
+            loading.querySelector('span').textContent = 'Generating PNG...';
+
             try {
-                // Simple fallback: create an SVG with a data URL and trigger download
-                const svgData = new XMLSerializer().serializeToString(svgClone);
-                const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
-                const url = URL.createObjectURL(svgBlob);
-                
-                // Create an image and convert to canvas in the main document
+                // Clone SVG
+                const clone = svg.cloneNode(true);
+
+                // Ensure namespace so serialization is correct
+                if (!clone.getAttribute('xmlns')) clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+
+                // Inline computed styles into cloned SVG to avoid canvas tainting
+                inlineStyles(clone, svg);
+
+                // Determine dimensions (prefer viewBox; fallback to bbox)
+                let width = 0, height = 0;
+                const viewBoxAttr = clone.getAttribute('viewBox');
+                if (viewBoxAttr) {
+                    const parts = viewBoxAttr.split(/\s+|,/).map(Number).filter(n => !Number.isNaN(n));
+                    if (parts.length === 4) {
+                        width = parts[2];
+                        height = parts[3];
+                    }
+                }
+                if (!width || !height) {
+                    // Use source SVG bbox as fallback
+                    try {
+                        const bbox = svg.getBBox();
+                        width = bbox.width || svg.clientWidth || 800;
+                        height = bbox.height || svg.clientHeight || 600;
+                        clone.setAttribute('viewBox', `0 0 ${width} ${height}`);
+                    } catch (err) {
+                        // In rare cases getBBox may throw; use client sizes
+                        width = svg.clientWidth || 800;
+                        height = svg.clientHeight || 600;
+                        clone.setAttribute('viewBox', `0 0 ${width} ${height}`);
+                    }
+                }
+
+                // HiDPI scale (2x)
+                const scale = 2;
                 const canvas = document.createElement('canvas');
-                canvas.width = width + padding * 2;
-                canvas.height = height + padding * 2;
+                canvas.width = Math.round(width * scale);
+                canvas.height = Math.round(height * scale);
+
                 const ctx = canvas.getContext('2d');
-                
-                // Clear to transparent
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                
+                // reset transform and scale for HiDPI
+                ctx.setTransform(scale, 0, 0, scale, 0, 0);
+                ctx.clearRect(0, 0, width, height);
+
+                const svgData = new XMLSerializer().serializeToString(clone);
+                const svgUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgData);
+
                 const img = new Image();
+
+                // Important: do not set crossOrigin — we inlined styles so data URL should be safe
                 img.onload = function() {
                     try {
-                        // This might still fail due to CORS, but it's worth a try
-                        ctx.drawImage(img, padding, padding, width, height);
-                        
-                        // Convert to data URL
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        // Convert to blob and download
                         canvas.toBlob(function(blob) {
-                            if (blob) {
-                                const pngUrl = URL.createObjectURL(blob);
-                                const a = document.createElement('a');
-                                a.href = pngUrl;
-                                a.download = 'mermaid-diagram.png';
-                                document.body.appendChild(a);
-                                a.click();
-                                document.body.removeChild(a);
-                                URL.revokeObjectURL(pngUrl);
+                            if (!blob) {
+                                throw new Error('Canvas toBlob returned null');
                             }
-                            
-                            // Clean up
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = 'mermaid-diagram.png';
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
                             URL.revokeObjectURL(url);
-                            if (tempDiv && tempDiv.parentNode) {
-                                document.body.removeChild(tempDiv);
-                            }
-                            if (iframe && iframe.parentNode) {
-                                document.body.removeChild(iframe);
-                            }
                             loading.classList.add('hidden');
                         }, 'image/png');
                     } catch (err) {
-                        console.error('Fallback PNG error:', err);
-                        alert('Could not generate PNG. Please use SVG export instead.');
+                        console.error('PNG write error:', err);
                         loading.classList.add('hidden');
-                        if (tempDiv && tempDiv.parentNode) document.body.removeChild(tempDiv);
-                        if (iframe && iframe.parentNode) document.body.removeChild(iframe);
-                        URL.revokeObjectURL(url);
+                        alert('PNG export failed. Use SVG export as a fallback.');
                     }
                 };
-                
-                img.onerror = function() {
-                    alert('Could not generate PNG. Please use SVG export instead.');
+
+                img.onerror = function(err) {
+                    console.error('Image load error for SVG data URL:', err);
                     loading.classList.add('hidden');
-                    if (tempDiv && tempDiv.parentNode) document.body.removeChild(tempDiv);
-                    if (iframe && iframe.parentNode) document.body.removeChild(iframe);
-                    URL.revokeObjectURL(url);
+                    alert('PNG export failed. Use SVG export as a fallback.');
                 };
-                
-                img.src = url;
-                
+
+                img.src = svgUrl;
+
             } catch (err) {
-                console.error('Final fallback error:', err);
-                alert('Could not generate PNG. Please use SVG export instead.');
-                loading.classList.add('hidden');
-                if (tempDiv && tempDiv.parentNode) document.body.removeChild(tempDiv);
-                if (iframe && iframe.parentNode) document.body.removeChild(iframe);
+                console.error('PNG export error:', err);
+                document.getElementById('loading').classList.add('hidden');
+                alert('PNG export failed. Please use SVG export instead.');
+            }
+        }
+
+        function inlineStyles(target, source) {
+            // Inline computed styles for every element in the cloned SVG.
+            // We map by order; for most generated SVGs (Mermaid) this works reliably.
+            try {
+                const srcEls = source.querySelectorAll('*');
+                const tgtEls = target.querySelectorAll('*');
+
+                // Inline root <svg> computed styles too
+                const rootStyle = window.getComputedStyle(source);
+                let rootCss = '';
+                for (let i = 0; i < rootStyle.length; i++) {
+                    const prop = rootStyle[i];
+                    rootCss += `${prop}:${rootStyle.getPropertyValue(prop)};`;
+                }
+                target.setAttribute('style', rootCss);
+
+                const len = Math.min(srcEls.length, tgtEls.length);
+                for (let i = 0; i < len; i++) {
+                    const src = srcEls[i];
+                    const tgt = tgtEls[i];
+                    const style = window.getComputedStyle(src);
+                    let css = '';
+                    for (let j = 0; j < style.length; j++) {
+                        const prop = style[j];
+                        css += `${prop}:${style.getPropertyValue(prop)};`;
+                    }
+                    // preserve existing inline style attributes (append)
+                    const existing = tgt.getAttribute('style') || '';
+                    tgt.setAttribute('style', existing + css);
+                }
+
+                // copy over <style> elements (if any) by converting them to inline rules where possible
+                // (keep style tags too — they won't taint canvas if inlined above)
+                const srcStyles = source.querySelectorAll('style');
+                if (srcStyles.length) {
+                    for (const s of srcStyles) {
+                        const clonedStyle = s.cloneNode(true);
+                        target.insertBefore(clonedStyle, target.firstChild);
+                    }
+                }
+            } catch (err) {
+                console.warn('inlineStyles warning:', err);
             }
         }
 
@@ -729,25 +671,25 @@
         window.zoomOut = zoomOut;
         window.resetView = resetView;
         window.saveApiKey = saveApiKey;
-        
+
         // Initialize
         const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
         const isDark = state.theme === 'dark' || (state.theme === 'system' && systemDark);
         document.documentElement.classList.toggle('dark', isDark);
-        
+
         mermaid.initialize({
             startOnLoad: false,
             theme: isDark ? 'dark' : 'default',
             securityLevel: 'loose',
             fontFamily: 'Inter, system-ui, sans-serif'
         });
-        
+
         const activeBtn = document.getElementById(`btn-${state.theme}`);
         if (activeBtn) activeBtn.classList.add('active');
-        
+
         // Initial render
         setTimeout(render, 100);
-        
+
         // Auto-save API key when typing
         apiKeyInput.addEventListener('input', saveApiKey);
     </script>
